@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiblioUni — Crear cuenta</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.register-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.left-panel {
+  background: linear-gradient(160deg, #f5eef8 0%, #fce8f0 50%, #fdf3ee 100%);
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  position: relative; overflow: hidden;
+  border-right: 1px solid rgba(200,195,240,.3);
+  transform: translateX(-100%);
+  transition: transform .7s cubic-bezier(0.34,1.1,0.64,1);
+}
+.left-panel.in { transform: none; }
+
+.left-panel::before {
+  content: '';
+  position: absolute; width: 350px; height: 350px;
+  background: rgba(108,92,231,.05); border-radius: 50%;
+  top: -80px; right: -80px;
+  animation: blob-move 9s ease-in-out infinite alternate;
+}
+@keyframes blob-move { from{transform:scale(1)} to{transform:scale(1.1) translate(10px,8px)} }
+
+.panel-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.2rem;
+  color: var(--ink); text-decoration: none; z-index: 1;
+  opacity: 0; transform: translateY(-8px);
+  transition: opacity .4s .5s, transform .4s .5s var(--ease-spring);
+}
+.left-panel.in .panel-logo { opacity: 1; transform: none; }
+.panel-logo .logo-icon { width: 34px; height: 34px; font-size: .95rem; }
+.panel-logo:hover .logo-icon { transform: rotate(-8deg) scale(1.1); }
+
+.steps-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.7rem; font-weight: 700; color: var(--ink);
+  line-height: 1.25; margin-bottom: 10px;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity .5s .6s, transform .5s .6s;
+}
+.left-panel.in .steps-title { opacity: 1; transform: none; }
+
+.steps-sub {
+  font-size: .875rem; color: var(--ink-mid); line-height: 1.65;
+  margin-bottom: 40px; max-width: 320px;
+  opacity: 0; transition: opacity .5s .75s;
+}
+.left-panel.in .steps-sub { opacity: 1; }
+
+/* STEPS */
+.steps-list { display: flex; flex-direction: column; gap: 16px; z-index: 1; }
+.step {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 18px 20px;
+  background: rgba(255,255,255,.7); backdrop-filter: blur(8px);
+  border: 1px solid rgba(200,195,240,.5); border-radius: 16px;
+  opacity: 0; transform: translateX(-16px);
+  transition: opacity .45s, transform .45s var(--ease-spring),
+              border-color .25s, box-shadow .25s;
+}
+.left-panel.in .step:nth-child(1) { opacity:1;transform:none;transition-delay:.82s; }
+.left-panel.in .step:nth-child(2) { opacity:1;transform:none;transition-delay:.94s; }
+.left-panel.in .step:nth-child(3) { opacity:1;transform:none;transition-delay:1.06s; }
+.step:hover { border-color: rgba(108,92,231,.3); box-shadow: 0 6px 20px rgba(108,92,231,.08); }
+
+.step-num {
+  width: 32px; height: 32px; flex-shrink: 0;
+  background: var(--accent); color: #fff;
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: .8rem; font-weight: 800;
+  transition: transform .3s var(--ease-spring), box-shadow .3s;
+}
+.step:hover .step-num { transform: scale(1.12) rotate(-5deg); box-shadow: 0 4px 12px rgba(108,92,231,.35); }
+
+.step-label { font-weight: 700; font-size: .88rem; color: var(--ink); margin-bottom: 3px; }
+.step-desc { font-size: .78rem; color: var(--ink-mid); line-height: 1.5; }
+
+.panel-quote {
+  z-index: 1; padding: 20px;
+  background: rgba(108,92,231,.08); border-radius: 16px;
+  border-left: 3px solid var(--accent);
+  opacity: 0; transform: translateY(10px);
+  transition: opacity .5s 1.2s, transform .5s 1.2s;
+}
+.left-panel.in .panel-quote { opacity: 1; transform: none; }
+.quote-text { font-size: .875rem; color: var(--ink-mid); line-height: 1.65; font-style: italic; margin-bottom: 8px; }
+.quote-author { font-size: .75rem; font-weight: 700; color: var(--accent); }
+
+/* ── RIGHT PANEL ── */
+.right-panel {
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px 40px;
+  overflow-y: auto;
+  opacity: 0; transform: translateX(24px);
+  transition: opacity .6s .25s, transform .6s .25s var(--ease-smooth);
+}
+.right-panel.in { opacity: 1; transform: none; }
+.auth-card { width: 100%; max-width: 420px; }
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: .82rem; font-weight: 600; color: var(--ink-mid);
+  text-decoration: none; margin-bottom: 36px;
+  transition: color .2s, transform .25s var(--ease-spring);
+}
+.back-link:hover { color: var(--accent); transform: translateX(-4px); }
+
+.auth-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem; font-weight: 700; color: var(--ink);
+  letter-spacing: -.02em; margin-bottom: 6px;
+}
+.auth-sub { font-size: .875rem; color: var(--ink-light); margin-bottom: 32px; line-height: 1.6; }
+
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
+.role-card {
+  padding: 12px 14px; border-radius: var(--radius-sm);
+  border: 1.5px solid rgba(200,195,240,.6);
+  background: rgba(248,246,255,.6); cursor: pointer;
+  transition: border-color .25s, background .25s, transform .3s var(--ease-spring), box-shadow .25s;
+  text-align: center;
+}
+.role-card:hover { border-color: rgba(108,92,231,.4); background: rgba(108,92,231,.04); transform: translateY(-2px); }
+.role-card.selected {
+  border-color: var(--accent); background: var(--accent-soft);
+  transform: scale(1.03);
+  box-shadow: 0 4px 16px rgba(108,92,231,.18);
+}
+.role-icon { font-size: 1.4rem; margin-bottom: 4px; transition: transform .3s var(--ease-spring); }
+.role-card:hover .role-icon, .role-card.selected .role-icon { transform: scale(1.2) translateY(-2px); }
+.role-name { font-size: .78rem; font-weight: 700; color: var(--ink); }
+
+.strength-bar {
+  height: 4px; border-radius: 100px;
+  background: rgba(200,195,240,.3); margin-top: 8px; overflow: hidden;
+}
+.strength-fill {
+  height: 100%; border-radius: 100px;
+  width: 0%; transition: width .5s var(--ease-smooth), background .5s;
+}
+.strength-label {
+  font-size: .7rem; color: var(--ink-light);
+  margin-top: 5px; font-weight: 500;
+  transition: color .4s;
+}
+
+.check-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 20px; margin-top: 4px;
+}
+.check-row input[type=checkbox] {
+  margin-top: 3px; accent-color: var(--accent);
+  width: 16px; height: 16px; flex-shrink: 0;
+  cursor: pointer;
+  transition: transform .25s var(--ease-spring);
+}
+.check-row input[type=checkbox]:checked { transform: scale(1.2); }
+.check-row label { font-size: .8rem; color: var(--ink-mid); line-height: 1.5; cursor: pointer; }
+.check-row a { color: var(--accent); font-weight: 600; text-decoration: none; }
+.check-row a:hover { text-decoration: underline; }
+
+.form-progress {
+  display: flex; gap: 6px; margin-bottom: 28px;
+}
+.prog-dot {
+  height: 4px; flex: 1; border-radius: 4px;
+  background: rgba(200,195,240,.4);
+  transition: background .4s, transform .3s var(--ease-spring);
+}
+.prog-dot.filled { background: var(--accent); }
+
+@media(max-width:768px){
+  .register-layout{grid-template-columns:1fr}
+  .left-panel{display:none}
+  .right-panel{padding:40px 24px}
+}
+@keyframes shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)}
+  60%{transform:translateX(-5px)}
+  80%{transform:translateX(5px)}
+}
+</style>
+</head>
+<body>
+
+<div id="page-cover"></div>
+<div class="orb orb-1" style="background:#e8e6fb"></div>
+<div class="orb orb-2" style="background:#fbeef4"></div>
+
+<div class="register-layout">
+
+  <div class="left-panel" id="leftPanel">
+    <a class="panel-logo" href="index.html">
+      <div class="logo-icon">📖</div>
+      BiblioUni
+    </a>
+
+    <div style="z-index:1">
+      <h2 class="steps-title">Accede a todo el conocimiento universitario</h2>
+      <p class="steps-sub">Crear tu cuenta es rápido y gratuito. Solo necesitas tu correo y código estudiantil.</p>
+      <div class="steps-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-label">Regístrate con tus datos</div>
+            <div class="step-desc">Usa tu correo institucional y código estudiantil para verificar tu identidad.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-label">Explora el catálogo</div>
+            <div class="step-desc">Accede a más de 84.000 títulos académicos, revistas y recursos digitales.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-label">Reserva y gestiona préstamos</div>
+            <div class="step-desc">Reserva ejemplares físicos o accede a versiones digitales desde cualquier lugar.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-quote">
+      <p class="quote-text">"Una habitación sin libros es como un cuerpo sin alma."</p>
+      <div class="quote-author">— Marco Tulio Cicerón</div>
+    </div>
+  </div>
+
+  <div class="right-panel" id="rightPanel">
+    <div class="auth-card">
+      <a class="back-link" href="login.html">← ¿Ya tienes cuenta? Inicia sesión</a>
+
+      <div class="auth-title">Crear cuenta</div>
+      <p class="auth-sub">Completa los datos para acceder a la biblioteca universitaria.</p>
+
+      <div class="form-progress" id="progDots">
+        <div class="prog-dot" id="pd0"></div>
+        <div class="prog-dot" id="pd1"></div>
+        <div class="prog-dot" id="pd2"></div>
+        <div class="prog-dot" id="pd3"></div>
+        <div class="prog-dot" id="pd4"></div>
+      </div>
+
+      <div class="field">
+        <label>Soy…</label>
+        <div class="role-grid" id="roleGrid">
+          <div class="role-card selected" onclick="selectRole(this)"><div class="role-icon">👩‍🎓</div><div class="role-name">Estudiante</div></div>
+          <div class="role-card" onclick="selectRole(this)"><div class="role-icon">👨‍🏫</div><div class="role-name">Docente</div></div>
+          <div class="role-card" onclick="selectRole(this)"><div class="role-icon">🔬</div><div class="role-name">Investigador</div></div>
+          <div class="role-card" onclick="selectRole(this)"><div class="role-icon">🧑‍💼</div><div class="role-name">Administrativo</div></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Nombre completo</label>
+        <input type="text" placeholder="Tu nombre completo" id="name" oninput="updateProgress()">
+      </div>
+      <div class="field">
+        <label>Correo institucional</label>
+        <input type="email" placeholder="tu@universidad.edu" id="email" oninput="updateProgress()">
+      </div>
+      <div class="field">
+        <label>Código estudiantil / ID</label>
+        <input type="text" placeholder="Ej: 20241234" id="code" oninput="updateProgress()">
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" placeholder="Mínimo 8 caracteres" id="password" oninput="checkStrength(this.value); updateProgress()">
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div class="strength-label" id="strengthLabel">Ingresa una contraseña</div>
+      </div>
+
+      <div class="check-row">
+        <input type="checkbox" id="terms" onchange="updateProgress()">
+        <label for="terms">Acepto los <a href="#">términos y condiciones</a> y la <a href="#">política de privacidad</a> de BiblioUni.</label>
+      </div>
+
+      <button class="btn-submit ripple-host" onclick="handleRegister()">Crear cuenta</button>
+      <p class="auth-foot">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
+    </div>
+  </div>
+
+</div>
+
+<script src="animations.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => document.getElementById('leftPanel').classList.add('in'), 80);
+  setTimeout(() => document.getElementById('rightPanel').classList.add('in'), 220);
+
+  document.querySelectorAll('.field, .check-row, .btn-submit, .auth-foot').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(14px)';
+    el.style.transition = `opacity .45s ${.35 + i * .07}s, transform .45s ${.35 + i * .07}s`;
+    setTimeout(() => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    }, 300 + i * 70);
+  });
+});
+
+function selectRole(el) {
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+
+  el.style.transform = 'scale(.94)';
+  setTimeout(() => el.style.transform = '', 200);
+}
+
+const strengthLevels = [
+  { w:'0%',   color:'rgba(200,195,240,.4)', text:'Ingresa una contraseña' },
+  { w:'28%',  color:'#f0a882',             text:'Débil' },
+  { w:'52%',  color:'#f5c270',             text:'Moderada' },
+  { w:'78%',  color:'#81d4c2',             text:'Buena' },
+  { w:'100%', color:'#6c5ce7',             text:'Muy segura ✓' },
+];
+
+function checkStrength(val) {
+  let score = 0;
+  if (val.length >= 8)            score++;
+  if (/[A-Z]/.test(val))         score++;
+  if (/[0-9]/.test(val))         score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const lvl = val.length === 0 ? strengthLevels[0] : strengthLevels[Math.min(score, 4)];
+  const fill  = document.getElementById('strengthFill');
+  const label = document.getElementById('strengthLabel');
+  fill.style.width      = lvl.w;
+  fill.style.background = lvl.color;
+  label.textContent     = lvl.text;
+  label.style.color     = lvl.color;
+}
+
+function updateProgress() {
+  const fields = [
+    document.getElementById('name').value,
+    document.getElementById('email').value,
+    document.getElementById('code').value,
+    document.getElementById('password').value,
+    document.getElementById('terms').checked ? 'yes' : '',
+  ];
+  const dots = document.querySelectorAll('.prog-dot');
+  fields.forEach((v, i) => {
+    dots[i].classList.toggle('filled', !!v);
+  });
+}
+
+function handleRegister() {
+  const name  = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const code  = document.getElementById('code').value;
+  const pass  = document.getElementById('password').value;
+  const terms = document.getElementById('terms').checked;
+  const btn   = document.querySelector('.btn-submit');
+
+  if (!name || !email || !code || !pass || !terms) {
+    btn.style.animation = 'none';
+    requestAnimationFrame(() => { btn.style.animation = 'shake .4s ease'; });
+
+    [{ id:'name', val:name }, { id:'email', val:email }, { id:'code', val:code }, { id:'password', val:pass }].forEach(({ id, val }) => {
+      if (!val) {
+        const el = document.getElementById(id);
+        el.style.borderColor = '#f0a882';
+        el.addEventListener('input', () => el.style.borderColor = '', { once: true });
+      }
+    });
+    return;
+  }
+
+  btn.textContent = 'Creando cuenta…';
+  btn.style.opacity = '.8';
+  btn.style.pointerEvents = 'none';
+
+  setTimeout(() => {
+    btn.textContent = ' ¡Cuenta creada!';
+    btn.style.background = 'linear-gradient(135deg,#00b894,#55efc4)';
+    btn.style.color = '#fff';
+    btn.style.opacity = '1';
+    const role = document.querySelector('.role-card.selected .role-name')?.textContent;
+    console.log('Register:', { name, email, code, pass, role });
+  }, 1400);
+}
+</script>
+</body>
+</html>

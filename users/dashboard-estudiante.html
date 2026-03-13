@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiblioUni — Estudiante</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.dash { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto; gap: 20px; }
+
+.welcome-banner {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 60%, #c9c5f0 100%);
+  border-radius: var(--radius); padding: 32px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  overflow: hidden; position: relative;
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s .1s, transform .55s .1s var(--ease-smooth);
+}
+.welcome-banner.in { opacity: 1; transform: none; }
+.welcome-banner::before {
+  content: ''; position: absolute; width: 300px; height: 300px;
+  background: rgba(255,255,255,.08); border-radius: 50%;
+  top: -100px; right: -60px; pointer-events: none;
+}
+.welcome-banner::after {
+  content: ''; position: absolute; width: 180px; height: 180px;
+  background: rgba(255,255,255,.05); border-radius: 50%;
+  bottom: -60px; left: 200px; pointer-events: none;
+}
+.welcome-text h2 {
+  font-family: 'Playfair Display', serif; font-size: 1.65rem; font-weight: 700;
+  color: #fff; margin-bottom: 6px; z-index: 1; position: relative;
+}
+.welcome-text p { font-size: .9rem; color: rgba(255,255,255,.75); z-index: 1; position: relative; }
+.welcome-emoji { font-size: 4rem; z-index: 1; animation: float 4s ease-in-out infinite; }
+
+.stat-card {
+  background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
+  border-radius: var(--radius); padding: 24px 26px;
+  backdrop-filter: blur(12px);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .5s, transform .5s var(--ease-smooth),
+              box-shadow .3s, border-color .25s;
+}
+.stat-card.in { opacity: 1; transform: none; }
+.stat-card:hover { box-shadow: 0 12px 36px rgba(108,92,231,.14); border-color: rgba(108,92,231,.2); }
+.stat-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.stat-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+  transition: transform .35s var(--ease-spring);
+}
+.stat-card:hover .stat-icon { transform: scale(1.15) rotate(-6deg); }
+.stat-trend { font-size: .72rem; font-weight: 700; padding: 3px 9px; border-radius: 100px; }
+.trend-up   { background: rgba(200,240,220,.8); color: #1a6b4a; }
+.trend-warn { background: rgba(255,220,200,.8); color: #a84a1a; }
+.trend-neu  { background: rgba(200,195,240,.6); color: var(--accent); }
+.stat-value {
+  font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700;
+  color: var(--ink); line-height: 1; margin-bottom: 4px;
+}
+.stat-label { font-size: .8rem; color: var(--ink-light); }
+
+.sec-title {
+  font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--ink); margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+}
+.sec-title span { font-size: 1rem; }
+
+.loans-card {
+  grid-column: 1 / 3;
+  background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
+  border-radius: var(--radius); padding: 26px;
+  backdrop-filter: blur(12px);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .5s .2s, transform .5s .2s var(--ease-smooth);
+}
+.loans-card.in { opacity: 1; transform: none; }
+
+.loan-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid rgba(200,195,240,.3);
+  transition: background .2s, transform .25s var(--ease-spring);
+  border-radius: 10px; padding-left: 8px; padding-right: 8px; cursor: default;
+}
+.loan-row:last-child { border-bottom: none; }
+.loan-row:hover { background: rgba(108,92,231,.04); transform: translateX(4px); }
+.loan-cover {
+  width: 44px; height: 58px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; flex-shrink: 0;
+  transition: transform .3s var(--ease-spring);
+}
+.loan-row:hover .loan-cover { transform: scale(1.08) rotate(-3deg); }
+.loan-info { flex: 1; }
+.loan-title { font-weight: 700; font-size: .9rem; color: var(--ink); margin-bottom: 2px; }
+.loan-author { font-size: .75rem; color: var(--ink-light); }
+.loan-due {
+  font-size: .75rem; font-weight: 700; padding: 4px 12px;
+  border-radius: 100px; white-space: nowrap;
+}
+.due-ok   { background: rgba(200,240,220,.8); color: #1a6b4a; }
+.due-warn { background: rgba(255,220,200,.8); color: #a84a1a; }
+.renew-btn {
+  padding: 6px 14px; border-radius: 8px; font-size: .75rem; font-weight: 600;
+  border: 1.5px solid rgba(108,92,231,.3); background: rgba(108,92,231,.07);
+  color: var(--accent); cursor: pointer; font-family: 'Nunito', sans-serif;
+  transition: all .25s var(--ease-spring); white-space: nowrap;
+}
+.renew-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: scale(1.07); }
+
+.progress-card {
+  background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
+  border-radius: var(--radius); padding: 26px;
+  backdrop-filter: blur(12px);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .5s .3s, transform .5s .3s var(--ease-smooth);
+}
+.progress-card.in { opacity: 1; transform: none; }
+.prog-book { margin-bottom: 18px; }
+.prog-book:last-child { margin-bottom: 0; }
+.prog-book-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.prog-emoji { font-size: 1.4rem; }
+.prog-name { font-size: .85rem; font-weight: 700; color: var(--ink); flex: 1; }
+.prog-pct { font-size: .75rem; font-weight: 700; color: var(--accent); }
+.prog-bar-bg {
+  height: 6px; background: rgba(200,195,240,.3); border-radius: 100px; overflow: hidden;
+}
+.prog-bar-fill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, #6c5ce7, #a29bfe);
+  width: 0%; transition: width 1.2s var(--ease-smooth);
+}
+
+.reco-card {
+  grid-column: 1 / -1;
+  background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
+  border-radius: var(--radius); padding: 26px;
+  backdrop-filter: blur(12px);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .5s .35s, transform .5s .35s var(--ease-smooth);
+}
+.reco-card.in { opacity: 1; transform: none; }
+.reco-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+.reco-item {
+  border: 1.5px solid rgba(200,195,240,.5); border-radius: 14px;
+  overflow: hidden; cursor: pointer;
+  transition: transform .3s var(--ease-spring), box-shadow .3s, border-color .25s;
+}
+.reco-item:hover { transform: translateY(-5px); box-shadow: 0 14px 32px rgba(108,92,231,.18); border-color: rgba(108,92,231,.25); }
+.reco-cover {
+  height: 110px; display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem;
+  transition: transform .3s;
+}
+.reco-item:hover .reco-cover { transform: scale(1.06); }
+.reco-body { padding: 12px 14px; }
+.reco-genre { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-light); margin-bottom: 4px; }
+.reco-title { font-family: 'Playfair Display', serif; font-size: .85rem; font-weight: 600; color: var(--ink); line-height: 1.25; }
+
+.events-card {
+  background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
+  border-radius: var(--radius); padding: 26px;
+  backdrop-filter: blur(12px);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .5s .4s, transform .5s .4s var(--ease-smooth);
+}
+.events-card.in { opacity: 1; transform: none; }
+.event-row {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 12px 0; border-bottom: 1px solid rgba(200,195,240,.25);
+  transition: transform .25s var(--ease-spring);
+}
+.event-row:last-child { border-bottom: none; }
+.event-row:hover { transform: translateX(4px); }
+.event-date {
+  width: 42px; height: 46px; background: var(--accent-soft);
+  border-radius: 10px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; flex-shrink: 0;
+  border: 1px solid rgba(108,92,231,.15);
+}
+.event-day { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--accent); line-height: 1; }
+.event-mon { font-size: .6rem; font-weight: 700; text-transform: uppercase; color: var(--ink-light); letter-spacing: .05em; }
+.event-text { flex: 1; }
+.event-name { font-size: .85rem; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.event-sub  { font-size: .75rem; color: var(--ink-light); }
+
+@media(max-width:1000px) {
+  .dash { grid-template-columns: 1fr 1fr; }
+  .welcome-banner { grid-column: 1/-1; }
+  .loans-card { grid-column: 1/-1; }
+  .reco-card { grid-column: 1/-1; }
+  .reco-grid { grid-template-columns: repeat(2,1fr); }
+}
+@media(max-width:640px) {
+  .dash { grid-template-columns: 1fr; }
+  .reco-grid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+<div id="page-cover"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <a class="logo" href="index.html"><div class="logo-icon">📖</div>BiblioUni</a>
+    <div class="user-block">
+      <div class="avatar">👩‍🎓</div>
+      <div class="user-name">María López</div>
+      <div class="user-role">Estudiante · Ingeniería</div>
+    </div>
+    <nav class="nav-menu">
+      <a class="nav-item active" href="dashboard-estudiante.html"><span class="icon">🏠</span> Mi panel</a>
+      <a class="nav-item" href="index.html"><span class="icon">📚</span> Catálogo</a>
+      <a class="nav-item" href="#"><span class="icon">🔔</span> Notificaciones<span class="nav-badge">2</span></a>
+      <a class="nav-item" href="#"><span class="icon">📦</span> Mis préstamos</a>
+      <a class="nav-item" href="#"><span class="icon">❤️</span> Favoritos</a>
+      <a class="nav-item" href="#"><span class="icon">📅</span> Historial</a>
+      <a class="nav-item" href="#"><span class="icon">⚙️</span> Ajustes</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a class="social-icon" href="#">📘</a>
+      <a class="social-icon" href="#">🐦</a>
+      <a class="social-icon" href="#">▶️</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <div class="search-bar">
+        <span class="s-icon">🔍</span>
+        <input type="text" placeholder="Buscar libros, autores…">
+      </div>
+      <nav class="topbar-nav">
+        <a class="topbar-link" href="index.html">Catálogo</a>
+        <a class="topbar-link" href="#">Novedades</a>
+        <span style="font-size:.8rem;color:var(--ink-light)">Rol: <strong style="color:var(--accent)">Estudiante</strong></span>
+      </nav>
+    </header>
+
+    <div class="content">
+      <div class="dash" id="dash">
+
+        <div class="welcome-banner" id="wb">
+          <div class="welcome-text">
+            <h2>¡Hola, María! 👋</h2>
+            <p>Tienes <strong style="color:#fff">2 préstamos activos</strong> y 1 vence pronto. ¡No olvides renovarlo!</p>
+          </div>
+          <div class="welcome-emoji">👩‍🎓</div>
+        </div>
+
+        <div class="stat-card" id="sc0">
+          <div class="stat-top">
+            <div class="stat-icon" style="background:rgba(108,92,231,.12)">📦</div>
+            <span class="stat-trend trend-up">Activos</span>
+          </div>
+          <div class="stat-value" data-count="2" id="sv0">0</div>
+          <div class="stat-label">Préstamos activos</div>
+        </div>
+        <div class="stat-card" id="sc1">
+          <div class="stat-top">
+            <div class="stat-icon" style="background:rgba(240,197,216,.3)">📖</div>
+            <span class="stat-trend trend-neu">Este mes</span>
+          </div>
+          <div class="stat-value" data-count="7" id="sv1">0</div>
+          <div class="stat-label">Libros leídos</div>
+        </div>
+        <div class="stat-card" id="sc2">
+          <div class="stat-top">
+            <div class="stat-icon" style="background:rgba(197,232,224,.4)">❤️</div>
+            <span class="stat-trend trend-neu">Guardados</span>
+          </div>
+          <div class="stat-value" data-count="14" id="sv2">0</div>
+          <div class="stat-label">En favoritos</div>
+        </div>
+
+        <div class="loans-card" id="lc">
+          <div class="sec-title"><span>📦</span> Préstamos activos</div>
+          <div class="loan-row">
+            <div class="loan-cover" style="background:linear-gradient(145deg,#c9c5f0,#a29bfe)">📐</div>
+            <div class="loan-info">
+              <div class="loan-title">Cálculo: Trascendentes Tempranas</div>
+              <div class="loan-author">James Stewart · Físico</div>
+            </div>
+            <span class="loan-due due-warn">Vence: 16 Mar</span>
+            <button class="renew-btn ripple-host">Renovar</button>
+          </div>
+          <div class="loan-row">
+            <div class="loan-cover" style="background:linear-gradient(145deg,#c5e8e0,#81d4c2)">💻</div>
+            <div class="loan-info">
+              <div class="loan-title">Clean Code</div>
+              <div class="loan-author">Robert C. Martin · Físico</div>
+            </div>
+            <span class="loan-due due-ok">Vence: 28 Mar</span>
+            <button class="renew-btn ripple-host">Renovar</button>
+          </div>
+        </div>
+
+        <div class="progress-card" id="pc">
+          <div class="sec-title"><span>📊</span> Progreso de lectura</div>
+          <div class="prog-book">
+            <div class="prog-book-header">
+              <span class="prog-emoji">📐</span>
+              <span class="prog-name">Cálculo Trascendentes</span>
+              <span class="prog-pct">68%</span>
+            </div>
+            <div class="prog-bar-bg"><div class="prog-bar-fill" data-pct="68"></div></div>
+          </div>
+          <div class="prog-book">
+            <div class="prog-book-header">
+              <span class="prog-emoji">💻</span>
+              <span class="prog-name">Clean Code</span>
+              <span class="prog-pct">35%</span>
+            </div>
+            <div class="prog-bar-bg"><div class="prog-bar-fill" data-pct="35"></div></div>
+          </div>
+          <div class="prog-book">
+            <div class="prog-book-header">
+              <span class="prog-emoji">🧬</span>
+              <span class="prog-name">Biología Molecular</span>
+              <span class="prog-pct">90%</span>
+            </div>
+            <div class="prog-bar-bg"><div class="prog-bar-fill" data-pct="90"></div></div>
+          </div>
+        </div>
+
+        <div class="reco-card" id="rec">
+          <div class="sec-title"><span>✨</span> Recomendados para ti</div>
+          <div class="reco-grid">
+            <div class="reco-item"><div class="reco-cover" style="background:linear-gradient(145deg,#fce8c8,#f5c270)">📊</div><div class="reco-body"><div class="reco-genre">Economía</div><div class="reco-title">Principios de Economía</div></div></div>
+            <div class="reco-item"><div class="reco-cover" style="background:linear-gradient(145deg,#f0c5d8,#e88ab8)">🧬</div><div class="reco-body"><div class="reco-genre">Biología</div><div class="reco-title">Biología Molecular de la Célula</div></div></div>
+            <div class="reco-item"><div class="reco-cover" style="background:linear-gradient(145deg,#c5e8e0,#81d4c2)">⚗️</div><div class="reco-body"><div class="reco-genre">Química</div><div class="reco-title">Química Orgánica Avanzada</div></div></div>
+            <div class="reco-item"><div class="reco-cover" style="background:linear-gradient(145deg,#f5d9c8,#f0a882)">📐</div><div class="reco-body"><div class="reco-genre">Física</div><div class="reco-title">Física Universitaria</div></div></div>
+          </div>
+        </div>
+
+        <div class="events-card" id="ev">
+          <div class="sec-title"><span>📅</span> Próximos eventos</div>
+          <div class="event-row">
+            <div class="event-date"><div class="event-day">18</div><div class="event-mon">Mar</div></div>
+            <div class="event-text"><div class="event-name">Taller: Citas APA 7</div><div class="event-sub">Sala de conferencias B · 10:00 am</div></div>
+          </div>
+          <div class="event-row">
+            <div class="event-date"><div class="event-day">22</div><div class="event-mon">Mar</div></div>
+            <div class="event-text"><div class="event-name">Club de lectura STEM</div><div class="event-sub">Virtual · Google Meet · 4:00 pm</div></div>
+          </div>
+          <div class="event-row">
+            <div class="event-date"><div class="event-day">01</div><div class="event-mon">Abr</div></div>
+            <div class="event-text"><div class="event-name">Feria del libro universitario</div><div class="event-sub">Plazoleta central · Todo el día</div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="animations.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => document.getElementById('sidebar').classList.add('in'), 60);
+  setTimeout(() => document.getElementById('topbar').classList.add('in'), 140);
+
+  const delays = { wb:100, sc0:180, sc1:240, sc2:300, lc:360, pc:420, rec:480, ev:540 };
+  Object.entries(delays).forEach(([id, delay]) => {
+    setTimeout(() => document.getElementById(id)?.classList.add('in'), delay);
+  });
+
+  setTimeout(() => {
+    [['sv0',2],['sv1',7],['sv2',14]].forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let s = null;
+      const step = ts => {
+        if (!s) s = ts;
+        const p = Math.min((ts-s)/900, 1);
+        el.textContent = Math.round((1-Math.pow(1-p,3))*val);
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }, 400);
+
+  setTimeout(() => {
+    document.querySelectorAll('.prog-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.pct + '%';
+    });
+  }, 700);
+});
+</script>
+</body>
+</html>

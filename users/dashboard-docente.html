@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiblioUni — Docente</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+:root {
+  --accent: #0984e3;
+  --accent-soft: rgba(9,132,227,0.1);
+}
+.logo-icon, .nav-badge, .btn-submit,
+.step-num, .login-btn { background: var(--accent) !important; }
+.nav-item.active, .nav-item:hover { color: var(--accent) !important; background: var(--accent-soft) !important; }
+.topbar-link:hover, .see-all, .sec-link { color: var(--accent) !important; }
+.topbar-link::after, .see-all::after { background: var(--accent) !important; }
+.prog-bar-fill { background: linear-gradient(90deg,#0984e3,#74b9ff) !important; }
+.badge-accent { background: rgba(9,132,227,.12); color: #0984e3; }
+.orb-1 { background: #b2d8f7 !important; }
+.orb-2 { background: #ddf3ff !important; }
+
+.dash { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+.welcome-banner {
+  grid-column: 1/-1;
+  background: linear-gradient(135deg,#0984e3 0%,#74b9ff 60%,#ddf3ff 100%);
+  border-radius: var(--radius); padding: 32px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  overflow: hidden; position: relative;
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s .1s, transform .55s .1s var(--ease-smooth);
+}
+.welcome-banner.in { opacity: 1; transform: none; }
+.welcome-banner::before {
+  content:''; position:absolute; width:280px; height:280px;
+  background:rgba(255,255,255,.08); border-radius:50%;
+  top:-80px; right:-40px; pointer-events:none;
+}
+.welcome-text h2 { font-family:'Playfair Display',serif; font-size:1.65rem; font-weight:700; color:#fff; margin-bottom:6px; }
+.welcome-text p  { font-size:.9rem; color:rgba(255,255,255,.8); }
+.welcome-emoji   { font-size:4rem; animation: float 4s ease-in-out infinite; }
+
+.stat-card {
+  background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
+  border-radius: var(--radius); padding: 24px 26px;
+  backdrop-filter: blur(12px);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .5s, transform .5s var(--ease-smooth), box-shadow .3s, border-color .25s;
+}
+.stat-card.in { opacity: 1; transform: none; }
+.stat-card:hover { box-shadow: 0 10px 30px rgba(9,132,227,.14); border-color: rgba(9,132,227,.2); }
+.stat-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.stat-icon {
+  width:42px; height:42px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center; font-size:1.2rem;
+  transition: transform .35s var(--ease-spring);
+}
+.stat-card:hover .stat-icon { transform: scale(1.15) rotate(-6deg); }
+.stat-trend { font-size:.72rem; font-weight:700; padding:3px 9px; border-radius:100px; }
+.trend-up   { background:rgba(200,240,220,.8); color:#1a6b4a; }
+.trend-neu  { background:rgba(9,132,227,.1); color:#0984e3; }
+.stat-value { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--ink); line-height:1; margin-bottom:4px; }
+.stat-label { font-size:.8rem; color:var(--ink-light); }
+
+.sec-title {
+  font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700;
+  color:var(--ink); margin-bottom:16px; display:flex; align-items:center; gap:10px;
+}
+.sec-title span { font-size:1rem; }
+.sec-link { font-size:.78rem; font-weight:600; color:var(--accent); text-decoration:none; margin-left:auto; }
+
+.syllabus-card {
+  grid-column: 1/3;
+  background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
+  border-radius: var(--radius); padding: 26px;
+  backdrop-filter: blur(12px);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .5s .2s, transform .5s .2s var(--ease-smooth);
+}
+.syllabus-card.in { opacity: 1; transform: none; }
+
+.syl-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 13px 8px; border-bottom: 1px solid rgba(200,195,240,.25);
+  border-radius: 10px; cursor: default;
+  transition: background .2s, transform .25s var(--ease-spring);
+}
+.syl-row:last-child { border-bottom: none; }
+.syl-row:hover { background: rgba(9,132,227,.04); transform: translateX(4px); }
+.syl-cover {
+  width: 42px; height: 54px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; flex-shrink: 0;
+  transition: transform .3s var(--ease-spring);
+}
+.syl-row:hover .syl-cover { transform: scale(1.08) rotate(-3deg); }
+.syl-info { flex: 1; }
+.syl-title  { font-weight:700; font-size:.9rem; color:var(--ink); margin-bottom:2px; }
+.syl-course { font-size:.75rem; color:var(--ink-light); }
+.syl-chip {
+  font-size:.72rem; font-weight:700; padding:4px 12px;
+  border-radius:100px; white-space:nowrap;
+}
+.chip-req  { background:rgba(9,132,227,.12); color:#0984e3; }
+.chip-comp { background:rgba(200,240,220,.8); color:#1a6b4a; }
+.add-btn {
+  padding:6px 14px; border-radius:8px; font-size:.75rem; font-weight:600;
+  border:1.5px solid rgba(9,132,227,.3); background:rgba(9,132,227,.07);
+  color:#0984e3; cursor:pointer; font-family:'Nunito',sans-serif;
+  transition: all .25s var(--ease-spring);
+}
+.add-btn:hover { background:#0984e3; color:#fff; border-color:#0984e3; transform:scale(1.07); }
+
+.queue-card {
+  background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
+  border-radius: var(--radius); padding: 26px;
+  backdrop-filter: blur(12px);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .5s .3s, transform .5s .3s var(--ease-smooth);
+}
+.queue-card.in { opacity: 1; transform: none; }
+.q-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 0; border-bottom: 1px solid rgba(200,195,240,.25);
+  transition: transform .2s;
+}
+.q-row:last-child { border-bottom: none; }
+.q-row:hover { transform: translateX(4px); }
+.q-avatar {
+  width:36px; height:36px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; border:2px solid rgba(255,255,255,.8);
+}
+.q-name  { font-size:.85rem; font-weight:700; color:var(--ink); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.q-book  { font-size:.72rem; color:var(--ink-light); display:block; }
+.q-status {
+  font-size:.7rem; font-weight:700; padding:3px 9px; border-radius:100px;
+}
+.qs-pend { background:rgba(255,220,200,.8); color:#a84a1a; }
+.qs-ok   { background:rgba(200,240,220,.8); color:#1a6b4a; }
+
+.listbuilder-card {
+  grid-column: 1/-1;
+  background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
+  border-radius: var(--radius); padding: 26px;
+  backdrop-filter: blur(12px);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .5s .35s, transform .5s .35s var(--ease-smooth);
+}
+.listbuilder-card.in { opacity: 1; transform: none; }
+
+.list-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.list-item {
+  border: 1.5px solid rgba(9,132,227,.15); border-radius: 14px; padding: 16px;
+  display: flex; gap: 12px; align-items: center;
+  background: rgba(9,132,227,.03);
+  transition: border-color .25s, box-shadow .25s, transform .3s var(--ease-spring);
+}
+.list-item:hover { border-color:rgba(9,132,227,.3); box-shadow:0 6px 20px rgba(9,132,227,.1); transform:translateY(-3px); }
+.list-emoji { font-size:1.8rem; flex-shrink:0; transition: transform .3s var(--ease-spring); }
+.list-item:hover .list-emoji { transform: scale(1.15) rotate(-5deg); }
+.list-name  { font-weight:700; font-size:.85rem; color:var(--ink); margin-bottom:2px; }
+.list-meta  { font-size:.72rem; color:var(--ink-light); }
+.list-drag  { margin-left:auto; font-size:1rem; color:var(--ink-light); cursor:grab; }
+
+.analytics-card {
+  background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
+  border-radius: var(--radius); padding: 26px;
+  backdrop-filter: blur(12px);
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .5s .4s, transform .5s .4s var(--ease-smooth);
+}
+.analytics-card.in { opacity: 1; transform: none; }
+.mini-bars { display:flex; align-items:flex-end; gap:8px; height:80px; margin-top:16px; }
+.bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; }
+.bar {
+  width:100%; border-radius:6px 6px 0 0;
+  background: linear-gradient(180deg,#0984e3,#74b9ff);
+  transition: height 1s var(--ease-smooth);
+  height: 0;
+}
+.bar-label { font-size:.65rem; color:var(--ink-light); text-align:center; }
+
+@media(max-width:1000px){
+  .dash{grid-template-columns:1fr 1fr}
+  .welcome-banner,.syllabus-card,.listbuilder-card{grid-column:1/-1}
+  .list-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .dash{grid-template-columns:1fr}
+  .list-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="page-cover"></div>
+<div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <a class="logo" href="index.html"><div class="logo-icon">📖</div>BiblioUni</a>
+    <div class="user-block">
+      <div class="avatar">👨‍🏫</div>
+      <div class="user-name">Carlos Mendoza</div>
+      <div class="user-role">Docente · Facultad de Ing.</div>
+    </div>
+    <nav class="nav-menu">
+      <a class="nav-item active" href="dashboard-docente.html"><span class="icon">🏠</span> Mi panel</a>
+      <a class="nav-item" href="index.html"><span class="icon">📚</span> Catálogo</a>
+      <a class="nav-item" href="#"><span class="icon">📋</span> Listas de lectura</a>
+      <a class="nav-item" href="#"><span class="icon">🔔</span> Notificaciones<span class="nav-badge">5</span></a>
+      <a class="nav-item" href="#"><span class="icon">👥</span> Mis estudiantes</a>
+      <a class="nav-item" href="#"><span class="icon">📊</span> Estadísticas</a>
+      <a class="nav-item" href="#"><span class="icon">⚙️</span> Ajustes</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a class="social-icon" href="#">📘</a>
+      <a class="social-icon" href="#">🐦</a>
+      <a class="social-icon" href="#">▶️</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <div class="search-bar">
+        <span class="s-icon">🔍</span>
+        <input type="text" placeholder="Buscar por título, ISBN, materia…">
+      </div>
+      <nav class="topbar-nav">
+        <a class="topbar-link" href="#">Catálogo</a>
+        <a class="topbar-link" href="#">Mis listas</a>
+        <span style="font-size:.8rem;color:var(--ink-light)">Rol: <strong style="color:#0984e3">Docente</strong></span>
+      </nav>
+    </header>
+
+    <div class="content">
+      <div class="dash">
+
+        <div class="welcome-banner" id="wb">
+          <div class="welcome-text">
+            <h2>Buenos días, prof. Mendoza 📋</h2>
+            <p>Tienes <strong style="color:#fff">3 solicitudes de reserva</strong> pendientes de aprobar de tus estudiantes.</p>
+          </div>
+          <div class="welcome-emoji">👨‍🏫</div>
+        </div>
+
+        <div class="stat-card" id="sc0">
+          <div class="stat-top"><div class="stat-icon" style="background:rgba(9,132,227,.1)">📋</div><span class="stat-trend trend-neu">Activas</span></div>
+          <div class="stat-value" id="sv0">0</div>
+          <div class="stat-label">Listas de lectura</div>
+        </div>
+        <div class="stat-card" id="sc1">
+          <div class="stat-top"><div class="stat-icon" style="background:rgba(200,240,220,.4)">👥</div><span class="stat-trend trend-up">Semestre</span></div>
+          <div class="stat-value" id="sv1">0</div>
+          <div class="stat-label">Estudiantes asignados</div>
+        </div>
+        <div class="stat-card" id="sc2">
+          <div class="stat-top"><div class="stat-icon" style="background:rgba(255,220,200,.4)">⏳</div><span class="stat-trend" style="background:rgba(255,220,200,.8);color:#a84a1a">Pendientes</span></div>
+          <div class="stat-value" id="sv2">0</div>
+          <div class="stat-label">Reservas por aprobar</div>
+        </div>
+
+        <div class="syllabus-card" id="lc">
+          <div class="sec-title"><span>📚</span> Bibliografía por curso <a class="sec-link" href="#">+ Agregar libro</a></div>
+          <div class="syl-row">
+            <div class="syl-cover" style="background:linear-gradient(145deg,#c9c5f0,#a29bfe)">📐</div>
+            <div class="syl-info"><div class="syl-title">Cálculo: Trascendentes Tempranas</div><div class="syl-course">Cálculo I · Ingeniería de Sistemas</div></div>
+            <span class="syl-chip chip-req">Obligatorio</span>
+            <button class="add-btn ripple-host">Ver</button>
+          </div>
+          <div class="syl-row">
+            <div class="syl-cover" style="background:linear-gradient(145deg,#c5e8e0,#81d4c2)">💻</div>
+            <div class="syl-info"><div class="syl-title">Clean Code</div><div class="syl-course">Ingeniería de Software II</div></div>
+            <span class="syl-chip chip-req">Obligatorio</span>
+            <button class="add-btn ripple-host">Ver</button>
+          </div>
+          <div class="syl-row">
+            <div class="syl-cover" style="background:linear-gradient(145deg,#fce8c8,#f5c270)">📊</div>
+            <div class="syl-info"><div class="syl-title">Principios de Economía</div><div class="syl-course">Economía para Ingenieros</div></div>
+            <span class="syl-chip chip-comp">Complementario</span>
+            <button class="add-btn ripple-host">Ver</button>
+          </div>
+        </div>
+
+        <div class="queue-card" id="pc">
+          <div class="sec-title"><span>⏳</span> Cola de reservas</div>
+          <div class="q-row">
+            <div class="q-avatar" style="background:linear-gradient(135deg,#c9c5f0,#a29bfe)">👩‍🎓</div>
+            <div><div class="q-name">María López</div><span class="q-book">Cálculo Trascendentes</span></div>
+            <span class="q-status qs-pend">Pendiente</span>
+          </div>
+          <div class="q-row">
+            <div class="q-avatar" style="background:linear-gradient(135deg,#c5e8e0,#81d4c2)">🧑‍🎓</div>
+            <div><div class="q-name">Luis García</div><span class="q-book">Clean Code</span></div>
+            <span class="q-status qs-pend">Pendiente</span>
+          </div>
+          <div class="q-row">
+            <div class="q-avatar" style="background:linear-gradient(135deg,#f0c5d8,#e88ab8)">👩‍🎓</div>
+            <div><div class="q-name">Ana Torres</div><span class="q-book">Principios Economía</span></div>
+            <span class="q-status qs-ok">Aprobado</span>
+          </div>
+        </div>
+
+        <div class="listbuilder-card" id="rec">
+          <div class="sec-title"><span>📋</span> Mis listas de lectura</div>
+          <div class="list-grid">
+            <div class="list-item"><span class="list-emoji">📐</span><div><div class="list-name">Cálculo I</div><div class="list-meta">4 libros · 38 estudiantes</div></div><span class="list-drag">⠿</span></div>
+            <div class="list-item"><span class="list-emoji">💻</span><div><div class="list-name">Ing. de Software II</div><div class="list-meta">6 libros · 27 estudiantes</div></div><span class="list-drag">⠿</span></div>
+            <div class="list-item"><span class="list-emoji">📊</span><div><div class="list-name">Economía Ingenieros</div><div class="list-meta">3 libros · 41 estudiantes</div></div><span class="list-drag">⠿</span></div>
+          </div>
+        </div>
+
+        <div class="analytics-card" id="ev">
+          <div class="sec-title"><span>📈</span> Uso bibliográfico</div>
+          <p style="font-size:.78rem;color:var(--ink-light)">Préstamos de tus listas este mes</p>
+          <div class="mini-bars" id="bars">
+            <div class="bar-wrap"><div class="bar" data-h="55"></div><div class="bar-label">Cál I</div></div>
+            <div class="bar-wrap"><div class="bar" data-h="72"></div><div class="bar-label">Soft II</div></div>
+            <div class="bar-wrap"><div class="bar" data-h="38"></div><div class="bar-label">Eco</div></div>
+            <div class="bar-wrap"><div class="bar" data-h="60"></div><div class="bar-label">Fís I</div></div>
+            <div class="bar-wrap"><div class="bar" data-h="45"></div><div class="bar-label">Mat</div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="animations.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => document.getElementById('sidebar').classList.add('in'), 60);
+  setTimeout(() => document.getElementById('topbar').classList.add('in'), 140);
+
+  const map = {wb:100,sc0:180,sc1:240,sc2:300,lc:360,pc:420,rec:480,ev:540};
+  Object.entries(map).forEach(([id,d]) => setTimeout(() => document.getElementById(id)?.classList.add('in'), d));
+
+  setTimeout(() => {
+    [['sv0',4],['sv1',106],['sv2',3]].forEach(([id,val]) => {
+      const el = document.getElementById(id); if(!el) return;
+      let s=null;
+      const step = ts => {
+        if(!s) s=ts;
+        const p = Math.min((ts-s)/900,1);
+        el.textContent = Math.round((1-Math.pow(1-p,3))*val);
+        if(p<1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }, 400);
+
+  setTimeout(() => {
+    document.querySelectorAll('.bar').forEach(bar => {
+      bar.style.height = bar.dataset.h + 'px';
+    });
+  }, 700);
+});
+</script>
+</body>
+</html>

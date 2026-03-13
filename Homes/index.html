@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiblioUni — Inicio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.featured-section {
+  display: grid; grid-template-columns: 1fr 320px;
+  gap: 48px; align-items: center;
+  margin-bottom: 52px;
+}
+.book-info { max-width: 480px; }
+
+.book-title-main {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 700;
+  letter-spacing: -0.01em; line-height: 1.1; color: var(--ink); margin-bottom: 6px;
+  min-height: 3.5em;
+}
+.book-author-main {
+  font-size: .95rem; color: var(--ink-mid); font-weight: 400; margin-bottom: 20px;
+  opacity: 0; transition: opacity .4s;
+}
+.book-author-main.vis { opacity: 1; }
+
+.book-desc {
+  font-size: .88rem; line-height: 1.75; color: var(--ink-mid); margin-bottom: 30px;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .5s .1s, transform .5s .1s;
+}
+.book-desc.vis { opacity: 1; transform: none; }
+
+.book-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+.action-card {
+  background: rgba(255,255,255,.75); border: 1.5px solid rgba(200,195,240,.6);
+  border-radius: var(--radius-sm); padding: 14px 22px;
+  cursor: pointer; transition: border-color .25s, box-shadow .25s, transform .3s var(--ease-spring), background .3s;
+  min-width: 130px; backdrop-filter: blur(8px);
+  opacity: 0; transform: translateY(10px);
+}
+.action-card.vis { opacity: 1; transform: none; }
+.action-card:hover { border-color: var(--accent); box-shadow: 0 8px 24px rgba(108,92,231,.15); transform: translateY(-3px); }
+.action-card.selected { background: linear-gradient(135deg,#6c5ce7,#a29bfe); border-color: transparent; }
+.action-label { font-size: .75rem; font-weight: 500; color: var(--ink-light); margin-bottom: 4px; transition: color .3s; }
+.action-card.selected .action-label { color: rgba(255,255,255,.75); }
+.action-price { font-size: 1.05rem; font-weight: 700; color: var(--ink); transition: color .3s; }
+.action-card.selected .action-price { color: #fff; }
+
+.cover-display { display: flex; align-items: center; justify-content: center; }
+.cover-wrap {
+  position: relative;
+  animation: float 5s ease-in-out infinite;
+}
+.book-cover-main {
+  width: 220px; height: 300px; border-radius: 18px;
+  box-shadow: 16px 20px 50px rgba(108,92,231,.25), 0 4px 16px rgba(0,0,0,.12);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 5.5rem; position: relative; overflow: hidden;
+  transition: background .5s ease;
+  cursor: grab;
+}
+.book-cover-main::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+  background: rgba(255,255,255,.5); border-radius: 18px 18px 0 0;
+}
+.book-cover-main::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,.12) 0%, transparent 60%);
+  border-radius: 18px;
+}
+.cover-emoji {
+  position: relative; z-index: 1;
+  transition: transform .4s var(--ease-spring);
+  display: block;
+}
+.book-cover-main:hover .cover-emoji { transform: scale(1.1) rotate(-4deg); }
+
+.cover-dot-nav {
+  position: absolute; right: -20px; top: 50%;
+  transform: translateY(-50%); display: flex; flex-direction: column; gap: 8px;
+}
+.dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(200,195,240,.45); cursor: pointer;
+  transition: background .25s, transform .3s var(--ease-spring), width .3s;
+}
+.dot.active { background: var(--accent); transform: scale(1.4); }
+.dot:hover:not(.active) { background: rgba(108,92,231,.4); transform: scale(1.2); }
+
+.shine-card {
+  position: relative; overflow: hidden;
+}
+.shine-card::after {
+  content: '';
+  position: absolute; top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+  transform: skewX(-15deg);
+  transition: none;
+}
+.shine-card:hover::after {
+  left: 125%;
+  transition: left .6s ease;
+}
+
+.may-like-section { }
+
+.mini-card {
+  opacity: 0; transform: translateY(22px) scale(.97);
+}
+.mini-card.card-in {
+  opacity: 1; transform: none;
+  transition: opacity .5s var(--ease-smooth), transform .5s var(--ease-smooth),
+              box-shadow .3s, border-color .25s;
+}
+
+@media(max-width:860px){
+  .featured-section{grid-template-columns:1fr}
+  .cover-display{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="page-cover"></div>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <a class="logo" href="index.html"><div class="logo-icon">📖</div>BiblioUni</a>
+    <div class="user-block">
+      <div class="avatar">👩‍🎓</div>
+      <div class="user-name">María López</div>
+      <div class="user-role">Estudiante · Ingeniería</div>
+    </div>
+    <nav class="nav-menu">
+      <a class="nav-item active" href="index.html"><span class="icon">🏠</span> Inicio</a>
+      <a class="nav-item" href="#"><span class="icon">👤</span> Mi cuenta</a>
+      <a class="nav-item" href="#"><span class="icon">🔔</span> Notificaciones<span class="nav-badge">3</span></a>
+      <a class="nav-item" href="#"><span class="icon">📦</span> Mis préstamos</a>
+      <a class="nav-item" href="#"><span class="icon">❤️</span> Favoritos</a>
+      <a class="nav-item" href="#"><span class="icon">⚙️</span> Ajustes</a>
+    </nav>
+    <div class="sidebar-footer">
+      <a class="social-icon" href="#">📘</a>
+      <a class="social-icon" href="#">🐦</a>
+      <a class="social-icon" href="#">▶️</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="search-bar">
+        <span class="s-icon">🔍</span>
+        <input type="text" placeholder="¿Qué quieres leer hoy?" id="searchInput" oninput="filterBooks()">
+      </div>
+      <nav class="topbar-nav">
+        <a class="topbar-link" href="#">Catálogo</a>
+        <a class="topbar-link" href="#">Blog</a>
+        <a class="topbar-link" href="#">Acerca de</a>
+        <a class="login-btn ripple-host" href="login.html">Iniciar sesión 🎓</a>
+      </nav>
+    </header>
+
+    <div class="content">
+
+      <div class="featured-section">
+        <div class="book-info">
+          <h1 class="book-title-main" id="featTitle"></h1>
+          <p class="book-author-main" id="featAuthor">James Stewart · 8ª edición</p>
+          <div class="tags reveal delay-2" id="featTags">
+            <span class="tag">Matemáticas</span>
+            <span class="tag">Cálculo</span>
+            <span class="tag">Ingeniería</span>
+          </div>
+          <p class="book-desc" id="featDesc">El texto de cálculo más utilizado en universidades de todo el mundo. Presenta el cálculo con precisión y rigor matemático, apoyado en ejemplos de la vida real y ejercicios cuidadosamente graduados.</p>
+          <div class="book-actions">
+            <div class="action-card ripple-host" onclick="selectAction(this)" style="transition-delay:.05s">
+              <div class="action-label">Préstamo físico</div>
+              <div class="action-price">5 ejemplares</div>
+            </div>
+            <div class="action-card selected ripple-host" onclick="selectAction(this)" style="transition-delay:.12s">
+              <div class="action-label">Versión digital</div>
+              <div class="action-price">Acceso libre</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cover-display reveal-scale">
+          <div class="cover-wrap">
+            <div class="book-cover-main shine-card" id="featCover" style="background:linear-gradient(145deg,#c9c5f0,#a29bfe)">
+              <span class="cover-emoji" id="featEmoji">📐</span>
+            </div>
+            <div class="cover-dot-nav">
+              <div class="dot active" onclick="switchFeatured(0)"></div>
+              <div class="dot" onclick="switchFeatured(1)"></div>
+              <div class="dot" onclick="switchFeatured(2)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="may-like-section reveal">
+        <div class="section-header">
+          <h2 class="section-title">También te puede gustar</h2>
+          <a class="see-all" href="#">Ver catálogo completo →</a>
+        </div>
+        <div class="books-row" id="booksRow"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="animations.js"></script>
+<script>
+const allBooks = [
+  { emoji:'📐', bg:'linear-gradient(145deg,#c9c5f0,#a29bfe)', genre:'Matemáticas', title:'Cálculo: Trascendentes Tempranas', author:'James Stewart · 8ª edición', copies:5, status:'avail', desc:'El texto de cálculo más utilizado en universidades de todo el mundo. Presenta el cálculo con precisión y rigor matemático, apoyado en ejemplos de la vida real y ejercicios cuidadosamente graduados.', tags:['Matemáticas','Cálculo','Ingeniería','Ciencias'] },
+  { emoji:'💻', bg:'linear-gradient(145deg,#c5e8e0,#81d4c2)', genre:'Ingeniería', title:'Clean Code', author:'Robert C. Martin', copies:3, status:'avail', desc:'Una guía esencial sobre cómo escribir código limpio, legible y fácil de mantener. Fundamental para todo programador que quiera mejorar su artesanía profesional.', tags:['Programación','Software','Ingeniería'] },
+  { emoji:'⚖️', bg:'linear-gradient(145deg,#f5d9c8,#f0a882)', genre:'Derecho', title:'Derecho Constitucional', author:'José Castán Tobeñas', copies:0, status:'loan', desc:'Análisis profundo del derecho constitucional con perspectiva comparada latinoamericana. Referencia indispensable para estudiantes de derecho.', tags:['Derecho','Constitución','Jurídico'] },
+  { emoji:'🧬', bg:'linear-gradient(145deg,#f0c5d8,#e88ab8)', genre:'Biología', title:'Biología Molecular de la Célula', author:'Alberts et al.', copies:2, status:'new', desc:'La referencia estándar en biología celular y molecular para estudiantes universitarios de ciencias de la salud y ciencias básicas.', tags:['Biología','Ciencias','Salud'] },
+  { emoji:'📊', bg:'linear-gradient(145deg,#fce8c8,#f5c270)', genre:'Economía', title:'Principios de Economía', author:'N. Gregory Mankiw', copies:4, status:'avail', desc:'La introducción más completa a la economía moderna. Usada en las principales universidades del mundo para cursos introductorios.', tags:['Economía','Finanzas','Microeconomía'] },
+];
+
+const featSet = [allBooks[0], allBooks[1], allBooks[3]];
+let currentFeat = 0;
+
+function setFeatured(idx, withTypewriter = false) {
+  const b = allBooks[idx];
+  const titleEl  = document.getElementById('featTitle');
+  const authorEl = document.getElementById('featAuthor');
+  const descEl   = document.getElementById('featDesc');
+  const cover    = document.getElementById('featCover');
+  const emojiEl  = document.getElementById('featEmoji');
+  const tagsEl   = document.getElementById('featTags');
+
+  authorEl.classList.remove('vis');
+  descEl.classList.remove('vis');
+  document.querySelectorAll('.action-card').forEach(c => c.classList.remove('vis'));
+
+  cover.style.transition = 'transform .35s ease, background .45s ease';
+  cover.style.transform = 'perspective(600px) rotateY(90deg) scale(.9)';
+
+  setTimeout(() => {
+    cover.style.background = b.bg;
+    emojiEl.textContent = b.emoji;
+    cover.style.transform = 'perspective(600px) rotateY(0deg) scale(1)';
+    cover.style.transition = 'transform .4s cubic-bezier(0.34,1.56,0.64,1), background .45s ease';
+  }, 300);
+
+  if (window.BiblioAnim) {
+    BiblioAnim.typewriter(titleEl, b.title, 38);
+  } else {
+    titleEl.textContent = b.title;
+  }
+
+  tagsEl.innerHTML = '';
+  b.tags.forEach((t, i) => {
+    const span = document.createElement('span');
+    span.className = 'tag';
+    span.textContent = t;
+    span.style.opacity = '0';
+    span.style.transform = 'translateY(6px)';
+    span.style.transition = `opacity .3s ${i * .07}s, transform .3s ${i * .07}s`;
+    tagsEl.appendChild(span);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      span.style.opacity = '1';
+      span.style.transform = 'none';
+    }));
+  });
+
+  setTimeout(() => {
+    authorEl.textContent = b.author;
+    authorEl.classList.add('vis');
+  }, 220);
+  setTimeout(() => {
+    descEl.textContent = b.desc;
+    descEl.classList.add('vis');
+  }, 340);
+  setTimeout(() => {
+    document.querySelectorAll('.action-card').forEach((c, i) => {
+      setTimeout(() => c.classList.add('vis'), i * 80);
+    });
+  }, 440);
+}
+
+function switchFeatured(i) {
+  currentFeat = i;
+  document.querySelectorAll('.dot').forEach((d, j) => d.classList.toggle('active', i === j));
+  setFeatured(allBooks.indexOf(featSet[i]));
+}
+
+let autoRotate = setInterval(() => {
+  currentFeat = (currentFeat + 1) % featSet.length;
+  switchFeatured(currentFeat);
+}, 6000);
+
+document.querySelectorAll('.dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    clearInterval(autoRotate);
+    autoRotate = setInterval(() => {
+      currentFeat = (currentFeat + 1) % featSet.length;
+      switchFeatured(currentFeat);
+    }, 6000);
+  });
+});
+
+function renderBooks(data) {
+  const row = document.getElementById('booksRow');
+  row.innerHTML = data.map((b, i) => `
+    <div class="mini-card shine-card" data-idx="${allBooks.indexOf(b)}">
+      <div class="mini-cover" style="background:${b.bg}">
+        ${b.emoji}
+        <span class="mini-badge badge-${b.status}">${b.status==='avail'?'Disponible':b.status==='new'?'Nuevo':'Prestado'}</span>
+      </div>
+      <div class="mini-body">
+        <div class="mini-genre">${b.genre}</div>
+        <div class="mini-title">${b.title}</div>
+        <div class="mini-author">${b.author}</div>
+        <div class="mini-footer">
+          <span class="mini-copies">${b.copies} ejs.</span>
+          <button class="mini-btn" ${b.status==='loan'?'disabled':''} onclick="event.stopPropagation()">${b.status==='loan'?'No disp.':'Reservar'}</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  row.querySelectorAll('.mini-card').forEach((card, i) => {
+    const originalIdx = parseInt(card.dataset.idx);
+    setTimeout(() => card.classList.add('card-in'), 80 + i * 70);
+    card.addEventListener('click', () => {
+      setFeatured(originalIdx);
+      card.style.transform = 'scale(.96)';
+      setTimeout(() => card.style.transform = '', 200);
+    });
+  });
+}
+
+function filterBooks() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const res = q
+    ? allBooks.filter(b => b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || b.genre.toLowerCase().includes(q))
+    : [...allBooks];
+
+  const row = document.getElementById('booksRow');
+  row.style.opacity = '0';
+  row.style.transform = 'translateY(6px)';
+  row.style.transition = 'opacity .2s, transform .2s';
+  setTimeout(() => {
+    renderBooks(res);
+    row.style.opacity = '1';
+    row.style.transform = 'none';
+  }, 180);
+}
+
+function selectAction(el) {
+  document.querySelectorAll('.action-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+
+  el.style.transform = 'scale(.95)';
+  setTimeout(() => el.style.transform = '', 180);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderBooks(allBooks);
+
+  setTimeout(() => {
+    setFeatured(0, true);
+    setTimeout(() => {
+      document.querySelectorAll('.action-card').forEach((c, i) => {
+        setTimeout(() => c.classList.add('vis'), i * 90);
+      });
+    }, 500);
+  }, 400);
+});
+</script>
+</body>
+</html>
