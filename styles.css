@@ -1,4 +1,6 @@
-
+/* ══════════════════════════════════════════
+   BiblioUni — Shared Styles + Animations
+   ══════════════════════════════════════════ */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -30,6 +32,7 @@ body {
   overflow-x: hidden;
 }
 
+/* ── SCROLL REVEAL (JS adds .visible) ── */
 .reveal {
   opacity: 0;
   transform: translateY(28px);
@@ -52,12 +55,14 @@ body {
 }
 .reveal-scale.visible { opacity: 1; transform: none; }
 
+/* stagger delays */
 .delay-1 { transition-delay: .08s !important; }
 .delay-2 { transition-delay: .16s !important; }
 .delay-3 { transition-delay: .24s !important; }
 .delay-4 { transition-delay: .32s !important; }
 .delay-5 { transition-delay: .40s !important; }
 
+/* ── SIDEBAR ── */
 .sidebar {
   width: 210px; flex-shrink: 0;
   background: var(--sidebar-bg);
@@ -169,9 +174,11 @@ body {
 }
 .social-icon:hover { background: var(--accent); transform: translateY(-3px) scale(1.08); box-shadow: 0 6px 16px rgba(108,92,231,.35); }
 
+/* ── LAYOUT ── */
 .app { display: flex; min-height: 100vh; }
 .main { flex: 1; margin-left: 210px; display: flex; flex-direction: column; min-height: 100vh; }
 
+/* ── TOPBAR ── */
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
   padding: 22px 44px;
@@ -237,8 +244,10 @@ body {
 .login-btn:hover::before { transform: translateX(120%) skewX(-15deg); }
 .login-btn:active { transform: scale(.96); }
 
+/* ── CONTENT ── */
 .content { padding: 44px; flex: 1; }
 
+/* ── TAGS ── */
 .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
 .tag {
   padding: 6px 14px;
@@ -250,6 +259,7 @@ body {
 }
 .tag:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 
+/* ── MINI BOOK CARDS ── */
 .books-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 18px; }
 
 .mini-card {
@@ -302,6 +312,7 @@ body {
 .mini-btn:not(:disabled):active { transform: scale(.95); }
 .mini-btn:disabled { opacity: .4; cursor: not-allowed; }
 
+/* ── SECTION HEADER ── */
 .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
 .section-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--ink); }
 .see-all {
@@ -317,6 +328,7 @@ body {
 }
 .see-all:hover::after { transform: scaleX(1); transform-origin: left; }
 
+/* ── SHARED AUTH ── */
 .field { margin-bottom: 18px; }
 .field label { display: block; font-size: .78rem; font-weight: 700; margin-bottom: 8px; letter-spacing: .01em; color: var(--ink-mid); text-transform: uppercase; }
 .field input {
@@ -365,6 +377,7 @@ body {
 }
 .divider::before, .divider::after { content:''; flex:1; height:1px; background: rgba(200,195,240,.6); }
 
+/* ── FLOATING ORBS (background decoration) ── */
 .orb {
   position: fixed; border-radius: 50%;
   filter: blur(70px); opacity: .35;
@@ -379,6 +392,7 @@ body {
   to   { transform: translate(30px, 20px) scale(1.08); }
 }
 
+/* ── RIPPLE ── */
 .ripple-host { position: relative; overflow: hidden; }
 .ripple {
   position: absolute; border-radius: 50%;
@@ -388,21 +402,5 @@ body {
 }
 @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
-#page-cover {
-  position: fixed; inset: 0; z-index: 999;
-  background: var(--accent);
-  transform: scaleY(1); transform-origin: top;
-  transition: transform .55s var(--ease-smooth);
-}
-#page-cover.gone { transform: scaleY(0); transform-origin: top; }
-
-
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-
-@media(max-width:1100px){ .books-row{grid-template-columns:repeat(3,1fr)} }
-@media(max-width:860px){
-  .sidebar{display:none} .main{margin-left:0}
-  .topbar{padding:16px 20px} .content{padding:24px 20px}
-  .books-row{grid-template-columns:repeat(2,1fr)}
-}
+/* ── PAGE TRANSITION OVERLAY ── */
 @media(max-width:480px){ .books-row{grid-template-columns:1fr} }

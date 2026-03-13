@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <style>
+/* ── HOME SPECIFIC ── */
 .featured-section {
   display: grid; grid-template-columns: 1fr 320px;
   gap: 48px; align-items: center;
@@ -49,6 +50,7 @@
 .action-price { font-size: 1.05rem; font-weight: 700; color: var(--ink); transition: color .3s; }
 .action-card.selected .action-price { color: #fff; }
 
+/* COVER */
 .cover-display { display: flex; align-items: center; justify-content: center; }
 .cover-wrap {
   position: relative;
@@ -90,6 +92,7 @@
 .dot.active { background: var(--accent); transform: scale(1.4); }
 .dot:hover:not(.active) { background: rgba(108,92,231,.4); transform: scale(1.2); }
 
+/* REFLECT SHINE */
 .shine-card {
   position: relative; overflow: hidden;
 }
@@ -108,6 +111,7 @@
 
 .may-like-section { }
 
+/* CARDS STAGGER ANIMATION */
 .mini-card {
   opacity: 0; transform: translateY(22px) scale(.97);
 }
@@ -125,14 +129,17 @@
 </head>
 <body>
 
-<div id="page-cover"></div>
+<!-- PAGE TRANSITION COVER -->
 
+
+<!-- FLOATING ORBS -->
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 <div class="orb orb-3"></div>
 
 <div class="app">
 
+  <!-- SIDEBAR -->
   <aside class="sidebar">
     <a class="logo" href="index.html"><div class="logo-icon">📖</div>BiblioUni</a>
     <div class="user-block">
@@ -155,6 +162,7 @@
     </div>
   </aside>
 
+  <!-- MAIN -->
   <div class="main">
     <header class="topbar">
       <div class="search-bar">
@@ -171,6 +179,7 @@
 
     <div class="content">
 
+      <!-- FEATURED -->
       <div class="featured-section">
         <div class="book-info">
           <h1 class="book-title-main" id="featTitle"></h1>
@@ -207,6 +216,7 @@
         </div>
       </div>
 
+      <!-- MAY LIKE -->
       <div class="may-like-section reveal">
         <div class="section-header">
           <h2 class="section-title">También te puede gustar</h2>
@@ -232,6 +242,7 @@ const allBooks = [
 const featSet = [allBooks[0], allBooks[1], allBooks[3]];
 let currentFeat = 0;
 
+// ── FEATURED BOOK TRANSITION ──
 function setFeatured(idx, withTypewriter = false) {
   const b = allBooks[idx];
   const titleEl  = document.getElementById('featTitle');
@@ -241,10 +252,12 @@ function setFeatured(idx, withTypewriter = false) {
   const emojiEl  = document.getElementById('featEmoji');
   const tagsEl   = document.getElementById('featTags');
 
+  // fade out text
   authorEl.classList.remove('vis');
   descEl.classList.remove('vis');
   document.querySelectorAll('.action-card').forEach(c => c.classList.remove('vis'));
 
+  // cover flip
   cover.style.transition = 'transform .35s ease, background .45s ease';
   cover.style.transform = 'perspective(600px) rotateY(90deg) scale(.9)';
 
@@ -255,12 +268,14 @@ function setFeatured(idx, withTypewriter = false) {
     cover.style.transition = 'transform .4s cubic-bezier(0.34,1.56,0.64,1), background .45s ease';
   }, 300);
 
+  // typewriter title
   if (window.BiblioAnim) {
     BiblioAnim.typewriter(titleEl, b.title, 38);
   } else {
     titleEl.textContent = b.title;
   }
 
+  // tags swap
   tagsEl.innerHTML = '';
   b.tags.forEach((t, i) => {
     const span = document.createElement('span');
@@ -276,6 +291,7 @@ function setFeatured(idx, withTypewriter = false) {
     }));
   });
 
+  // fade in rest
   setTimeout(() => {
     authorEl.textContent = b.author;
     authorEl.classList.add('vis');
@@ -297,6 +313,7 @@ function switchFeatured(i) {
   setFeatured(allBooks.indexOf(featSet[i]));
 }
 
+// ── AUTO-ROTATE featured every 6s ──
 let autoRotate = setInterval(() => {
   currentFeat = (currentFeat + 1) % featSet.length;
   switchFeatured(currentFeat);
@@ -312,6 +329,7 @@ document.querySelectorAll('.dot').forEach(dot => {
   });
 });
 
+// ── RENDER GRID WITH STAGGER ──
 function renderBooks(data) {
   const row = document.getElementById('booksRow');
   row.innerHTML = data.map((b, i) => `
@@ -332,11 +350,13 @@ function renderBooks(data) {
     </div>
   `).join('');
 
+  // stagger cards in
   row.querySelectorAll('.mini-card').forEach((card, i) => {
     const originalIdx = parseInt(card.dataset.idx);
     setTimeout(() => card.classList.add('card-in'), 80 + i * 70);
     card.addEventListener('click', () => {
       setFeatured(originalIdx);
+      // pulse the card
       card.style.transform = 'scale(.96)';
       setTimeout(() => card.style.transform = '', 200);
     });
@@ -349,6 +369,7 @@ function filterBooks() {
     ? allBooks.filter(b => b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || b.genre.toLowerCase().includes(q))
     : [...allBooks];
 
+  // flash out then re-render
   const row = document.getElementById('booksRow');
   row.style.opacity = '0';
   row.style.transform = 'translateY(6px)';
@@ -363,16 +384,19 @@ function filterBooks() {
 function selectAction(el) {
   document.querySelectorAll('.action-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-
+  // small bounce
   el.style.transform = 'scale(.95)';
   setTimeout(() => el.style.transform = '', 180);
 }
 
+// ── INITIAL LOAD ──
 document.addEventListener('DOMContentLoaded', () => {
   renderBooks(allBooks);
 
+  // trigger typewriter on title after sidebar animates
   setTimeout(() => {
     setFeatured(0, true);
+    // also show action cards
     setTimeout(() => {
       document.querySelectorAll('.action-card').forEach((c, i) => {
         setTimeout(() => c.classList.add('vis'), i * 90);

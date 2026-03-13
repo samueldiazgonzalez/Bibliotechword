@@ -7,8 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <style>
+/* ── DASHBOARD GRID ── */
 .dash { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: auto; gap: 20px; }
 
+/* ── WELCOME BANNER ── */
 .welcome-banner {
   grid-column: 1 / -1;
   background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 60%, #c9c5f0 100%);
@@ -36,6 +38,7 @@
 .welcome-text p { font-size: .9rem; color: rgba(255,255,255,.75); z-index: 1; position: relative; }
 .welcome-emoji { font-size: 4rem; z-index: 1; animation: float 4s ease-in-out infinite; }
 
+/* ── STAT CARDS ── */
 .stat-card {
   background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
   border-radius: var(--radius); padding: 24px 26px;
@@ -63,12 +66,14 @@
 }
 .stat-label { font-size: .8rem; color: var(--ink-light); }
 
+/* ── SECTION TITLE ── */
 .sec-title {
   font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700;
   color: var(--ink); margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
 }
 .sec-title span { font-size: 1rem; }
 
+/* ── ACTIVE LOANS ── */
 .loans-card {
   grid-column: 1 / 3;
   background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
@@ -111,6 +116,7 @@
 }
 .renew-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: scale(1.07); }
 
+/* ── READING PROGRESS ── */
 .progress-card {
   background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
   border-radius: var(--radius); padding: 26px;
@@ -134,6 +140,7 @@
   width: 0%; transition: width 1.2s var(--ease-smooth);
 }
 
+/* ── RECOMMENDATIONS ── */
 .reco-card {
   grid-column: 1 / -1;
   background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
@@ -161,6 +168,7 @@
 .reco-genre { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-light); margin-bottom: 4px; }
 .reco-title { font-family: 'Playfair Display', serif; font-size: .85rem; font-weight: 600; color: var(--ink); line-height: 1.25; }
 
+/* ── UPCOMING ── */
 .events-card {
   background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
   border-radius: var(--radius); padding: 26px;
@@ -202,11 +210,11 @@
 </style>
 </head>
 <body>
-<div id="page-cover"></div>
+
 <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
 
 <div class="app">
-
+  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <a class="logo" href="index.html"><div class="logo-icon">📖</div>BiblioUni</a>
     <div class="user-block">
@@ -246,6 +254,7 @@
     <div class="content">
       <div class="dash" id="dash">
 
+        <!-- WELCOME -->
         <div class="welcome-banner" id="wb">
           <div class="welcome-text">
             <h2>¡Hola, María! 👋</h2>
@@ -254,6 +263,7 @@
           <div class="welcome-emoji">👩‍🎓</div>
         </div>
 
+        <!-- STATS -->
         <div class="stat-card" id="sc0">
           <div class="stat-top">
             <div class="stat-icon" style="background:rgba(108,92,231,.12)">📦</div>
@@ -279,6 +289,7 @@
           <div class="stat-label">En favoritos</div>
         </div>
 
+        <!-- LOANS -->
         <div class="loans-card" id="lc">
           <div class="sec-title"><span>📦</span> Préstamos activos</div>
           <div class="loan-row">
@@ -301,6 +312,7 @@
           </div>
         </div>
 
+        <!-- READING PROGRESS -->
         <div class="progress-card" id="pc">
           <div class="sec-title"><span>📊</span> Progreso de lectura</div>
           <div class="prog-book">
@@ -329,6 +341,7 @@
           </div>
         </div>
 
+        <!-- RECOMMENDATIONS -->
         <div class="reco-card" id="rec">
           <div class="sec-title"><span>✨</span> Recomendados para ti</div>
           <div class="reco-grid">
@@ -339,6 +352,7 @@
           </div>
         </div>
 
+        <!-- EVENTS -->
         <div class="events-card" id="ev">
           <div class="sec-title"><span>📅</span> Próximos eventos</div>
           <div class="event-row">
@@ -371,6 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => document.getElementById(id)?.classList.add('in'), delay);
   });
 
+  // animate stat counters
   setTimeout(() => {
     [['sv0',2],['sv1',7],['sv2',14]].forEach(([id, val]) => {
       const el = document.getElementById(id);
@@ -386,6 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, 400);
 
+  // animate progress bars
   setTimeout(() => {
     document.querySelectorAll('.prog-bar-fill').forEach(bar => {
       bar.style.width = bar.dataset.pct + '%';

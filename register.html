@@ -13,6 +13,7 @@
   grid-template-columns: 1fr 1fr;
 }
 
+/* ── LEFT PANEL ── */
 .left-panel {
   background: linear-gradient(160deg, #f5eef8 0%, #fce8f0 50%, #fdf3ee 100%);
   display: flex; flex-direction: column;
@@ -126,6 +127,7 @@
 }
 .auth-sub { font-size: .875rem; color: var(--ink-light); margin-bottom: 32px; line-height: 1.6; }
 
+/* ROLE GRID */
 .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
 .role-card {
   padding: 12px 14px; border-radius: var(--radius-sm);
@@ -144,6 +146,7 @@
 .role-card:hover .role-icon, .role-card.selected .role-icon { transform: scale(1.2) translateY(-2px); }
 .role-name { font-size: .78rem; font-weight: 700; color: var(--ink); }
 
+/* PASSWORD STRENGTH */
 .strength-bar {
   height: 4px; border-radius: 100px;
   background: rgba(200,195,240,.3); margin-top: 8px; overflow: hidden;
@@ -158,6 +161,7 @@
   transition: color .4s;
 }
 
+/* CHECKBOX */
 .check-row {
   display: flex; align-items: flex-start; gap: 10px;
   margin-bottom: 20px; margin-top: 4px;
@@ -173,6 +177,7 @@
 .check-row a { color: var(--accent); font-weight: 600; text-decoration: none; }
 .check-row a:hover { text-decoration: underline; }
 
+/* FORM FIELD PROGRESS DOTS */
 .form-progress {
   display: flex; gap: 6px; margin-bottom: 28px;
 }
@@ -199,12 +204,13 @@
 </head>
 <body>
 
-<div id="page-cover"></div>
+
 <div class="orb orb-1" style="background:#e8e6fb"></div>
 <div class="orb orb-2" style="background:#fbeef4"></div>
 
 <div class="register-layout">
 
+  <!-- LEFT -->
   <div class="left-panel" id="leftPanel">
     <a class="panel-logo" href="index.html">
       <div class="logo-icon">📖</div>
@@ -245,6 +251,7 @@
     </div>
   </div>
 
+  <!-- RIGHT -->
   <div class="right-panel" id="rightPanel">
     <div class="auth-card">
       <a class="back-link" href="login.html">← ¿Ya tienes cuenta? Inicia sesión</a>
@@ -252,6 +259,7 @@
       <div class="auth-title">Crear cuenta</div>
       <p class="auth-sub">Completa los datos para acceder a la biblioteca universitaria.</p>
 
+      <!-- PROGRESS DOTS -->
       <div class="form-progress" id="progDots">
         <div class="prog-dot" id="pd0"></div>
         <div class="prog-dot" id="pd1"></div>
@@ -260,6 +268,7 @@
         <div class="prog-dot" id="pd4"></div>
       </div>
 
+      <!-- ROLE -->
       <div class="field">
         <label>Soy…</label>
         <div class="role-grid" id="roleGrid">
@@ -307,6 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => document.getElementById('leftPanel').classList.add('in'), 80);
   setTimeout(() => document.getElementById('rightPanel').classList.add('in'), 220);
 
+  // animate each field in with stagger
   document.querySelectorAll('.field, .check-row, .btn-submit, .auth-foot').forEach((el, i) => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(14px)';
@@ -321,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function selectRole(el) {
   document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-
+  // tiny bounce
   el.style.transform = 'scale(.94)';
   setTimeout(() => el.style.transform = '', 200);
 }
@@ -374,7 +384,7 @@ function handleRegister() {
   if (!name || !email || !code || !pass || !terms) {
     btn.style.animation = 'none';
     requestAnimationFrame(() => { btn.style.animation = 'shake .4s ease'; });
-
+    // highlight empty fields
     [{ id:'name', val:name }, { id:'email', val:email }, { id:'code', val:code }, { id:'password', val:pass }].forEach(({ id, val }) => {
       if (!val) {
         const el = document.getElementById(id);
@@ -389,8 +399,9 @@ function handleRegister() {
   btn.style.opacity = '.8';
   btn.style.pointerEvents = 'none';
 
+  // TODO: conectar con el backend
   setTimeout(() => {
-    btn.textContent = ' ¡Cuenta creada!';
+    btn.textContent = '✓ ¡Cuenta creada!';
     btn.style.background = 'linear-gradient(135deg,#00b894,#55efc4)';
     btn.style.color = '#fff';
     btn.style.opacity = '1';

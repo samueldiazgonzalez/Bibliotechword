@@ -1,13 +1,9 @@
+/* animations.js — BiblioUni shared JS animations */
 
-(function () {
-  const cover = document.getElementById('page-cover');
-  if (cover) {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => { cover.classList.add('gone'); });
-    });
-  }
-})();
+// ── PAGE ENTRANCE ──
 
+
+// ── SIDEBAR SLIDE IN ──
 document.addEventListener('DOMContentLoaded', () => {
   const sidebar = document.querySelector('.sidebar');
   if (sidebar) setTimeout(() => sidebar.classList.add('in'), 60);
@@ -16,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (topbar) setTimeout(() => topbar.classList.add('in'), 120);
 });
 
+// ── SCROLL REVEAL (Intersection Observer) ──
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -32,6 +29,7 @@ function initReveal() {
 }
 document.addEventListener('DOMContentLoaded', initReveal);
 
+// ── RIPPLE EFFECT on buttons ──
 function addRipple(e) {
   const btn = e.currentTarget;
   const rect = btn.getBoundingClientRect();
@@ -52,13 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// ── SMOOTH PAGE NAVIGATION ──
 function navigateTo(href) {
-  const cover = document.getElementById('page-cover');
-  if (!cover) { location.href = href; return; }
-  cover.style.transformOrigin = 'bottom';
-  cover.style.transition = 'transform .4s cubic-bezier(0.4, 0, 0.2, 1)';
-  cover.style.transform = 'scaleY(1)';
-  setTimeout(() => { location.href = href; }, 380);
+  location.href = href;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -72,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// ── MAGNETIC HOVER on avatar ──
 document.addEventListener('DOMContentLoaded', () => {
   const avatar = document.querySelector('.avatar');
   if (!avatar) return;
@@ -88,13 +83,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// ── COUNTER ANIMATION (for stats) ──
 function animateCounter(el, target, duration = 1200) {
   const start = performance.now();
   const initial = 0;
   const update = (now) => {
     const elapsed = now - start;
     const progress = Math.min(elapsed / duration, 1);
-
+    // ease out cubic
     const eased = 1 - Math.pow(1 - progress, 3);
     const current = Math.round(initial + (target - initial) * eased);
     el.textContent = current.toLocaleString('es-CO');
@@ -117,6 +113,7 @@ function initCounters() {
 }
 document.addEventListener('DOMContentLoaded', initCounters);
 
+// ── TYPEWRITER for hero title ──
 function typewriter(el, text, speed = 42) {
   el.textContent = '';
   let i = 0;
@@ -129,6 +126,7 @@ function typewriter(el, text, speed = 42) {
   tick();
 }
 
+// ── TILT EFFECT on book cover ──
 function initTilt() {
   const cover = document.querySelector('.book-cover-main');
   const wrap = document.querySelector('.cover-wrap');
@@ -149,6 +147,7 @@ function initTilt() {
 }
 document.addEventListener('DOMContentLoaded', initTilt);
 
+// ── SEARCH BAR: highlight on focus ──
 document.addEventListener('DOMContentLoaded', () => {
   const bar = document.querySelector('.search-bar');
   if (!bar) return;
@@ -158,4 +157,5 @@ document.addEventListener('DOMContentLoaded', () => {
   input.addEventListener('blur', () => bar.classList.remove('focused'));
 });
 
+// expose globals
 window.BiblioAnim = { typewriter, animateCounter, navigateTo };

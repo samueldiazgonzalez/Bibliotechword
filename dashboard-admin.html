@@ -20,6 +20,7 @@
 
 .dash { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 
+/* WELCOME */
 .welcome-banner {
   grid-column: 1/-1;
   background: linear-gradient(135deg,#00b894 0%,#55efc4 55%,#b2f0e4 100%);
@@ -39,6 +40,7 @@
 .welcome-text p  { font-size:.9rem; color:rgba(255,255,255,.8); }
 .welcome-emoji   { font-size:4rem; animation: float 4s ease-in-out infinite; }
 
+/* STAT CARD */
 .stat-card {
   background: var(--card-bg); border: 1.5px solid rgba(255,255,255,.8);
   border-radius: var(--radius); padding: 22px 24px;
@@ -65,6 +67,7 @@
 .sec-title span { font-size:1rem; }
 .sec-link { font-size:.78rem; font-weight:600; color:var(--accent); text-decoration:none; margin-left:auto; }
 
+/* INVENTORY TABLE */
 .inventory-card {
   grid-column: 1/3;
   background: var(--card-bg); border:1.5px solid rgba(255,255,255,.8);
@@ -94,6 +97,7 @@
 .dot-edit { background:rgba(9,132,227,.12); }
 .dot-del  { background:rgba(255,200,200,.6); }
 
+/* USERS CARD */
 .users-card {
   grid-column: 3/5;
   background: var(--card-bg); border:1.5px solid rgba(255,255,255,.8);
@@ -122,6 +126,7 @@
 .u-action { font-size:.8rem; cursor:pointer; transition:transform .25s var(--ease-spring); }
 .u-action:hover { transform:scale(1.3); }
 
+/* LOANS CHART */
 .chart-card {
   grid-column: 1/3;
   background: var(--card-bg); border:1.5px solid rgba(255,255,255,.8);
@@ -145,6 +150,7 @@
 .bc-bar:hover .bc-val { opacity:1; }
 .bc-label { font-size:.65rem; color:var(--ink-light); text-align:center; }
 
+/* ALERTS */
 .alerts-card {
   grid-column: 3/5;
   background: var(--card-bg); border:1.5px solid rgba(255,255,255,.8);
@@ -174,6 +180,7 @@
 .alert-sub   { font-size:.75rem; color:var(--ink-light); }
 .alert-time  { font-size:.7rem; color:var(--ink-light); white-space:nowrap; }
 
+/* ADD BOOK QUICK */
 .addbook-card {
   grid-column: 1/-1;
   background: var(--card-bg); border:1.5px solid rgba(255,255,255,.8);
@@ -217,7 +224,7 @@
 </style>
 </head>
 <body>
-<div id="page-cover"></div>
+
 <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
 
 <div class="app">
@@ -261,6 +268,7 @@
     <div class="content">
       <div class="dash">
 
+        <!-- WELCOME -->
         <div class="welcome-banner" id="wb">
           <div class="welcome-text">
             <h2>Panel de administración 🗂️</h2>
@@ -269,6 +277,7 @@
           <div class="welcome-emoji">🧑‍💼</div>
         </div>
 
+        <!-- STATS 4 columns -->
         <div class="stat-card" id="sc0">
           <div class="stat-top"><div class="stat-icon" style="background:rgba(0,184,148,.1)">📚</div><span class="stat-trend trend-up">+12 hoy</span></div>
           <div class="stat-value" id="sv0">0</div>
@@ -290,6 +299,7 @@
           <div class="stat-label">Libros vencidos</div>
         </div>
 
+        <!-- INVENTORY -->
         <div class="inventory-card" id="lc">
           <div class="sec-title"><span>📦</span> Inventario <a class="sec-link" href="#">+ Agregar</a></div>
           <table class="inv-table">
@@ -323,6 +333,7 @@
           </table>
         </div>
 
+        <!-- USERS -->
         <div class="users-card" id="pc">
           <div class="sec-title"><span>👥</span> Usuarios recientes <a class="sec-link" href="#">Ver todos</a></div>
           <div class="user-row">
@@ -351,6 +362,7 @@
           </div>
         </div>
 
+        <!-- CHART -->
         <div class="chart-card" id="rec">
           <div class="sec-title"><span>📈</span> Préstamos por mes</div>
           <div class="bar-chart">
@@ -363,6 +375,7 @@
           </div>
         </div>
 
+        <!-- ALERTS -->
         <div class="alerts-card" id="ev">
           <div class="sec-title"><span>🔔</span> Alertas del sistema</div>
           <div class="alert-row">
@@ -387,6 +400,7 @@
           </div>
         </div>
 
+        <!-- ADD BOOK -->
         <div class="addbook-card" id="ab">
           <div class="sec-title"><span>➕</span> Agregar libro al catálogo</div>
           <div class="quick-form">
@@ -419,6 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const map = {wb:100,sc0:180,sc1:230,sc2:280,sc3:330,lc:400,pc:450,rec:500,ev:550,ab:600};
   Object.entries(map).forEach(([id,d]) => setTimeout(() => document.getElementById(id)?.classList.add('in'), d));
 
+  // counters
   setTimeout(() => {
     [['sv0',84320],['sv1',12084],['sv2',341],['sv3',7]].forEach(([id,val]) => {
       const el = document.getElementById(id); if(!el) return;
@@ -434,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, 400);
 
+  // bars & stock bars
   setTimeout(() => {
     document.querySelectorAll('.bc-bar').forEach(b => b.style.height = b.dataset.h+'px');
     document.querySelectorAll('.stock-bar').forEach(b => b.style.width = b.dataset.pct+'%');

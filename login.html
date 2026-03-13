@@ -13,6 +13,7 @@
   grid-template-columns: 1fr 1fr;
 }
 
+/* ── LEFT PANEL ── */
 .left-panel {
   background: linear-gradient(145deg, #6c5ce7 0%, #a29bfe 60%, #c9c5f0 100%);
   display: flex; flex-direction: column;
@@ -24,6 +25,7 @@
 }
 .left-panel.in { transform: none; }
 
+/* animated blobs inside panel */
 .blob {
   position: absolute; border-radius: 50%;
   background: rgba(255,255,255,.1);
@@ -107,6 +109,7 @@
 }
 .pstat-label { font-size: .72rem; color: rgba(255,255,255,.6); letter-spacing: .04em; text-transform: uppercase; }
 
+/* ── RIGHT PANEL ── */
 .right-panel {
   display: flex; align-items: center; justify-content: center;
   padding: 48px 40px;
@@ -157,6 +160,7 @@
 }
 .forgot-link:hover { color: #5046c4; transform: translateX(2px); }
 
+/* input floating label trick */
 .field { position: relative; }
 .field input:not(:placeholder-shown) + label,
 .field input:focus + label {
@@ -172,12 +176,13 @@
 </head>
 <body>
 
-<div id="page-cover"></div>
+
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
 
 <div class="login-layout">
 
+  <!-- LEFT -->
   <div class="left-panel" id="leftPanel">
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
@@ -214,6 +219,7 @@
     </div>
   </div>
 
+  <!-- RIGHT -->
   <div class="right-panel" id="rightPanel">
     <div class="auth-card">
       <a class="back-link" href="index.html">← Volver al inicio</a>
@@ -250,15 +256,18 @@
 <script src="animations.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-
+  // panel slide in
   setTimeout(() => document.getElementById('leftPanel').classList.add('in'), 80);
   setTimeout(() => document.getElementById('rightPanel').classList.add('in'), 200);
 
+  // counter animation triggered when panel is visible
   setTimeout(() => {
     animateStatWithSuffix('stat1', 84, 'K', 1400);
     animateStatWithSuffix('stat2', 12, 'K', 1200);
     animateStatWithSuffix('stat3', 98, '%', 1000);
   }, 1100);
+
+  // shake inputs on error highlight
   document.querySelectorAll('.field input').forEach(input => {
     input.addEventListener('invalid', () => {
       input.style.animation = 'none';
@@ -289,19 +298,20 @@ function handleLogin() {
   const btn   = document.querySelector('.btn-submit');
 
   if (!email || !pass) {
-  
+    // shake the button
     btn.style.animation = 'none';
     requestAnimationFrame(() => { btn.style.animation = 'shake .4s ease'; });
     return;
   }
 
+  // loading state
   btn.textContent = 'Iniciando sesión…';
   btn.style.opacity = '.8';
   btn.style.pointerEvents = 'none';
 
   // TODO: conectar con el backend
   setTimeout(() => {
-    btn.textContent = 'Sesión iniciada';
+    btn.textContent = '✓ Sesión iniciada';
     btn.style.background = 'linear-gradient(135deg,#00b894,#55efc4)';
     btn.style.opacity = '1';
     console.log('Login:', { email, pass });
